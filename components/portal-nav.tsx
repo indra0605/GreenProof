@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { Brand } from "./brand";
 import { Icon } from "./icons";
-import { GREEN_PROOF_CONTRACT_SHORT } from "@/lib/contract-config";
+import { useWalletSession } from "./wallet-session";
 
 const links = [
   { href: "/portal", label: "Overview", icon: "grid", exact: true },
@@ -17,6 +17,7 @@ const links = [
 
 export function PortalNav() {
   const pathname = usePathname();
+  const { contractAddress } = useWalletSession();
   return (
     <aside className="portal-nav">
       <div className="portal-nav__brand"><Brand /><span>Preprod</span></div>
@@ -29,7 +30,7 @@ export function PortalNav() {
       </nav>
       <div className="portal-nav__footer">
         <div className="network-state"><i />Midnight Preprod</div>
-        <span title="Deployed Green Proof contract">{GREEN_PROOF_CONTRACT_SHORT}</span>
+        <span title="Deployed Green Proof contract">{`${contractAddress.slice(0, 10)}…${contractAddress.slice(-8)}`}</span>
         <Link href="/verify">Public verifier <Icon name="external" /></Link>
       </div>
     </aside>

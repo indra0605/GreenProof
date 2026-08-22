@@ -91,7 +91,7 @@ export function detectOneAmWallet(): Promise<OneAmWallet | null> {
   });
 }
 
-function createPrivateStateProvider() {
+export function createPrivateStateProvider() {
   let scope = "undeployed";
   const states = new Map<string, unknown>();
   const signingKeys = new Map<string, unknown>();
@@ -114,7 +114,7 @@ function createPrivateStateProvider() {
   };
 }
 
-function createPatchedPublicDataProvider(queryUrl: string, subscriptionUrl: string) {
+export function createPatchedPublicDataProvider(queryUrl: string, subscriptionUrl: string) {
   const base = indexerPublicDataProvider(queryUrl, subscriptionUrl);
 
   async function queryLatest(query: string, address: string) {

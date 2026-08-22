@@ -28,14 +28,14 @@ export default function HomePage() {
         <div className="proof-object" aria-label="Redacted lab report transformed into compliant verdict">
           <div className="proof-object__tab">Private input</div>
           <article className="report-card">
-            <header><span>Material analysis</span><span>GP / A-1042</span></header>
+            <header><span>Material analysis</span><span>Private batch</span></header>
             <dl>
               <div><dt>Supplier</dt><dd><i className="redact redact--wide" /></dd></div>
               <div><dt>Composition</dt><dd><i className="redact" /></dd></div>
               <div><dt>Recycled content</dt><dd><i className="redact redact--short" /></dd></div>
-              <div><dt>Required</dt><dd>≥ 50%</dd></div>
+              <div><dt>Required</dt><dd>Public threshold</dd></div>
             </dl>
-            <footer><span>Lab #0092</span><span>Signed 10 Aug 2026</span></footer>
+            <footer><span>Trusted lab</span><span>Private evidence</span></footer>
             <div className="proof-stamp"><b>✓</b><span>Compliant</span><small>Verified on Midnight</small></div>
           </article>
           <div className="proof-object__note">Only this verdict becomes public</div>
