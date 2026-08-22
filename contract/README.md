@@ -35,8 +35,8 @@ and audit integrity.
 
 ## Build
 
-Requires Node.js 22+, Compact CLI, Compact language 0.22-0.23, and Midnight JS
-4.1.1-compatible packages.
+Requires Node.js 22+, Compact CLI with toolchain 0.31.1, Compact language 0.23,
+and Midnight JS 4.1.1-compatible packages.
 
 ```bash
 cd contract

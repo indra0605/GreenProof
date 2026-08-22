@@ -33,7 +33,7 @@ npm run dev
 For full local verification, install the Compact CLI, then run:
 
 ```bash
-compact update 0.23.0
+compact update 0.31.1
 npm run ci
 ```
 
