@@ -83,6 +83,69 @@ describe("Green Proof identity and privacy boundaries", () => {
     ).toThrow("actualBps must be between 0 and 10000");
   });
 
+  it("accepts evidence at the exact percentage and lab boundaries", () => {
+    for (const actualBps of [0n, 10_000n]) {
+      for (const labId of [1n, 65_535n]) {
+        const privateState: GreenProofPrivateState = {
+          callerSecret: bytes(1),
+          pendingEvidence: {
+            actualBps,
+            labId,
+            inspectedAt: 1n,
+            validUntil: 2n,
+            commitmentNonce: bytes(2),
+            signature: { announcement: { x: 1n, y: 2n }, response: 3n },
+          },
+        };
+
+        expect(witnesses.verificationEvidence(witnessContext(privateState))[1]).toEqual(
+          privateState.pendingEvidence,
+        );
+      }
+    }
+  });
+
+  it("rejects malformed evidence nonces and lab identifiers", () => {
+    const base = {
+      callerSecret: bytes(1),
+      pendingEvidence: {
+        actualBps: 5_000n,
+        labId: 1n,
+        inspectedAt: 1n,
+        validUntil: 2n,
+        commitmentNonce: bytes(2),
+        signature: { announcement: { x: 1n, y: 2n }, response: 3n },
+      },
+    } satisfies GreenProofPrivateState;
+
+    expect(() => witnesses.verificationEvidence(witnessContext({
+      ...base,
+      pendingEvidence: { ...base.pendingEvidence, commitmentNonce: new Uint8Array(31) },
+    }))).toThrow("commitmentNonce must be exactly 32 bytes");
+
+    expect(() => witnesses.verificationEvidence(witnessContext({
+      ...base,
+      pendingEvidence: { ...base.pendingEvidence, labId: 0n },
+    }))).toThrow("labId must be between 1 and 65535");
+
+    expect(() => witnesses.verificationEvidence(witnessContext({
+      ...base,
+      pendingEvidence: { ...base.pendingEvidence, labId: 65_536n },
+    }))).toThrow("labId must be between 1 and 65535");
+  });
+
+  it("splits Schnorr challenge into reversible high and low limbs", () => {
+    const challenge = (1n << 250n) + 123_456n;
+    const [, [high, low]] = witnesses.getSchnorrReduction(
+      witnessContext({ callerSecret: bytes(1) }),
+      challenge,
+    );
+
+    const limbBase = 1n << 248n;
+    expect(high * limbBase + low).toBe(challenge);
+    expect(low).toBeLessThan(limbBase);
+  });
+
   it("keeps exact percentage out of exported ledger declarations", () => {
     const contractPath = fileURLToPath(
       new URL("../src/green-proof.compact", import.meta.url),
