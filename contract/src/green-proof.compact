@@ -1,0 +1,470 @@
+pragma language_version >= 0.22 && <= 0.23;
+
+import CompactStandardLibrary;
+import "schnorr" prefix Schnorr_;
+
+export { Schnorr_SchnorrSignature };
+
+// All percentages use basis points: 5,000 = 50.00%, 10,000 = 100.00%.
+export new type BatchId = Bytes<32>;
+export new type CallerSecret = Bytes<32>;
+export new type AdminKey = Bytes<32>;
+export new type SupplierKey = Bytes<32>;
+export new type LabOperatorKey = Bytes<32>;
+
+export enum BatchStatus {
+  PENDING,
+  COMPLIANT,
+  NON_COMPLIANT,
+  REVOKED,
+  ARCHIVED,
+  DELETED
+}
+
+export enum AdminAction { SET_PAUSED, TRANSFER_ADMIN }
+export enum LabAction { REGISTER, UPDATE, SET_ACTIVE, DELETE }
+export enum BatchAction { CREATE, UPDATE, DELETE, REQUEST_REVERIFICATION, ARCHIVE }
+
+export struct LabRecord {
+  operatorKey: LabOperatorKey;
+  signingKey: JubjubPoint;
+  metadataHash: Bytes<32>;
+  active: Boolean;
+  revision: Uint<16>;
+}
+
+export struct BatchRecord {
+  supplier: SupplierKey;
+  productHash: Bytes<32>;
+  metadataHash: Bytes<32>;
+  requirementBps: Uint<16>;
+  status: BatchStatus;
+  recordRevision: Uint<16>;
+  verificationCount: Uint<16>;
+}
+
+export struct VerificationRecord {
+  status: BatchStatus;
+  labId: Uint<16>;
+  evidenceCommitment: Bytes<32>;
+  inspectedAt: Uint<64>;
+  validUntil: Uint<64>;
+  revoked: Boolean;
+}
+
+// Returned by private state. The exact recycled percentage, commitment nonce,
+// and lab signature never cross into public ledger state.
+struct VerificationEvidence {
+  actualBps: Uint<16>;
+  labId: Uint<16>;
+  inspectedAt: Uint<64>;
+  validUntil: Uint<64>;
+  commitmentNonce: Bytes<32>;
+  signature: Schnorr_SchnorrSignature;
+}
+
+struct EvidenceCommitInput {
+  contractAddress: ContractAddress;
+  batchId: BatchId;
+  supplier: SupplierKey;
+  productHash: Bytes<32>;
+  requirementBps: Uint<16>;
+  actualBps: Uint<16>;
+  labId: Uint<16>;
+  inspectedAt: Uint<64>;
+  validUntil: Uint<64>;
+}
+
+export ledger admin: AdminKey;
+export ledger paused: Boolean;
+export ledger labs: Map<Uint<16>, LabRecord>;
+export ledger batches: Map<BatchId, BatchRecord>;
+export ledger verifications: Map<BatchId, Map<Uint<16>, VerificationRecord>>;
+export ledger usedEvidence: Set<Bytes<32>>;
+export ledger totalBatches: Counter;
+export ledger totalLabs: Counter;
+export ledger totalVerifications: Counter;
+
+witness callerSecret(): CallerSecret;
+witness verificationEvidence(): VerificationEvidence;
+
+constructor() {
+  admin = disclose(deriveAdminKey(callerSecret()));
+  paused = false;
+}
+
+export pure circuit deriveAdminKey(secret: CallerSecret): AdminKey {
+  return persistentHash<[Bytes<19>, CallerSecret]>([
+    "greenproof:admin:v1",
+    secret
+  ]) as AdminKey;
+}
+
+export pure circuit deriveSupplierKey(secret: CallerSecret): SupplierKey {
+  return persistentHash<[Bytes<22>, CallerSecret]>([
+    "greenproof:supplier:v1",
+    secret
+  ]) as SupplierKey;
+}
+
+export pure circuit deriveLabOperatorKey(secret: CallerSecret): LabOperatorKey {
+  return persistentHash<[Bytes<26>, CallerSecret]>([
+    "greenproof:lab-operator:v1",
+    secret
+  ]) as LabOperatorKey;
+}
+
+circuit assertAdmin(): [] {
+  assert(admin == deriveAdminKey(callerSecret()), "Only admin may perform this operation");
+}
+
+circuit assertNotPaused(): [] {
+  assert(!paused, "Contract is paused");
+}
+
+circuit assertSupplier(batch: BatchRecord): [] {
+  assert(
+    batch.supplier == deriveSupplierKey(callerSecret()),
+    "Only batch supplier may perform this operation"
+  );
+}
+
+circuit assertLabOperator(labId: Uint<16>): [] {
+  assert(labs.member(labId), "Lab not found");
+  const lab = labs.lookup(labId);
+  assert(lab.active, "Lab is inactive");
+  assert(
+    lab.operatorKey == deriveLabOperatorKey(callerSecret()),
+    "Only lab operator may perform this operation"
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Governance and trusted-lab CRUD
+// ---------------------------------------------------------------------------
+
+export circuit manageAdmin(
+  action: AdminAction,
+  nextPaused: Boolean,
+  nextAdmin: AdminKey
+): [] {
+  assertAdmin();
+  const publicAction = disclose(action);
+  if (publicAction == AdminAction.SET_PAUSED) {
+    paused = disclose(nextPaused);
+  } else {
+    assert(nextAdmin != admin, "New admin must differ from current admin");
+    admin = disclose(nextAdmin);
+  }
+}
+
+export circuit manageLab(
+  action: LabAction,
+  labId: Uint<16>,
+  operatorKey: LabOperatorKey,
+  signingKey: JubjubPoint,
+  metadataHash: Bytes<32>,
+  active: Boolean
+): [] {
+  assertAdmin();
+  const publicAction = disclose(action);
+  const publicLabId = disclose(labId);
+  assert(publicLabId > 0, "Lab ID zero is reserved");
+  if (publicAction == LabAction.REGISTER) {
+    assert(!labs.member(publicLabId), "Lab already exists");
+    labs.insert(
+      publicLabId,
+      disclose(LabRecord {
+        operatorKey: operatorKey,
+        signingKey: signingKey,
+        metadataHash: metadataHash,
+        active: true,
+        revision: 1
+      })
+    );
+    totalLabs.increment(1);
+  } else {
+    assert(labs.member(publicLabId), "Lab not found");
+    const existing = labs.lookup(publicLabId);
+    assert(existing.revision < 65535, "Lab revision limit reached");
+    if (publicAction == LabAction.UPDATE) {
+      labs.insert(
+        publicLabId,
+        disclose(LabRecord {
+          operatorKey: operatorKey,
+          signingKey: signingKey,
+          metadataHash: metadataHash,
+          active: existing.active,
+          revision: (existing.revision + 1) as Uint<16>
+        })
+      );
+    } else {
+      if (publicAction == LabAction.DELETE) {
+        assert(existing.active, "Lab already inactive");
+      }
+      labs.insert(
+        publicLabId,
+        LabRecord {
+          operatorKey: existing.operatorKey,
+          signingKey: existing.signingKey,
+          metadataHash: existing.metadataHash,
+          active: publicAction == LabAction.DELETE ? false : disclose(active),
+          revision: (existing.revision + 1) as Uint<16>
+        }
+      );
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Supplier batch CRUD
+// ---------------------------------------------------------------------------
+
+export circuit manageBatch(
+  action: BatchAction,
+  batchId: BatchId,
+  productHash: Bytes<32>,
+  metadataHash: Bytes<32>,
+  requirementBps: Uint<16>
+): [] {
+  assertNotPaused();
+  const publicAction = disclose(action);
+  const publicBatchId = disclose(batchId);
+  if (publicAction == BatchAction.CREATE) {
+    assert(requirementBps > 0 && requirementBps <= 10000, "Requirement must be 1..10000 bps");
+    assert(!batches.member(publicBatchId), "Batch ID already exists");
+    const supplier = disclose(deriveSupplierKey(callerSecret()));
+    batches.insert(
+      publicBatchId,
+      disclose(BatchRecord {
+        supplier: supplier,
+        productHash: productHash,
+        metadataHash: metadataHash,
+        requirementBps: requirementBps,
+        status: BatchStatus.PENDING,
+        recordRevision: 1,
+        verificationCount: 0
+      })
+    );
+    totalBatches.increment(1);
+  } else {
+    assert(batches.member(publicBatchId), "Batch not found");
+    const existing = batches.lookup(publicBatchId);
+    assertSupplier(existing);
+    assert(existing.recordRevision < 65535, "Batch revision limit reached");
+    if (publicAction == BatchAction.UPDATE) {
+      assert(requirementBps > 0 && requirementBps <= 10000, "Requirement must be 1..10000 bps");
+      assert(existing.status == BatchStatus.PENDING, "Only pending batch may be updated");
+      batches.insert(
+        publicBatchId,
+        disclose(BatchRecord {
+          supplier: existing.supplier,
+          productHash: productHash,
+          metadataHash: metadataHash,
+          requirementBps: requirementBps,
+          status: existing.status,
+          recordRevision: (existing.recordRevision + 1) as Uint<16>,
+          verificationCount: existing.verificationCount
+        })
+      );
+    } else {
+      if (publicAction == BatchAction.DELETE) {
+        assert(existing.status == BatchStatus.PENDING, "Only pending batch may be deleted");
+        assert(existing.verificationCount == 0, "Verified batch cannot be deleted");
+        batches.insert(publicBatchId, BatchRecord {
+          supplier: existing.supplier,
+          productHash: existing.productHash,
+          metadataHash: existing.metadataHash,
+          requirementBps: existing.requirementBps,
+          status: BatchStatus.DELETED,
+          recordRevision: (existing.recordRevision + 1) as Uint<16>,
+          verificationCount: 0
+        });
+      } else {
+        if (publicAction == BatchAction.REQUEST_REVERIFICATION) {
+          assert(
+            existing.status == BatchStatus.COMPLIANT ||
+              existing.status == BatchStatus.NON_COMPLIANT ||
+              existing.status == BatchStatus.REVOKED,
+            "Batch cannot request reverification"
+          );
+          batches.insert(publicBatchId, BatchRecord {
+            supplier: existing.supplier,
+            productHash: existing.productHash,
+            metadataHash: existing.metadataHash,
+            requirementBps: existing.requirementBps,
+            status: BatchStatus.PENDING,
+            recordRevision: (existing.recordRevision + 1) as Uint<16>,
+            verificationCount: existing.verificationCount
+          });
+        } else {
+          assert(existing.status != BatchStatus.DELETED, "Deleted batch cannot be archived");
+          assert(existing.status != BatchStatus.ARCHIVED, "Batch already archived");
+          batches.insert(publicBatchId, BatchRecord {
+            supplier: existing.supplier,
+            productHash: existing.productHash,
+            metadataHash: existing.metadataHash,
+            requirementBps: existing.requirementBps,
+            status: BatchStatus.ARCHIVED,
+            recordRevision: (existing.recordRevision + 1) as Uint<16>,
+            verificationCount: existing.verificationCount
+          });
+        }
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Private verification
+// ---------------------------------------------------------------------------
+
+export circuit verifyBatch(batchId: BatchId): [] {
+  assertNotPaused();
+  const publicBatchId = disclose(batchId);
+  assert(batches.member(publicBatchId), "Batch not found");
+  const batch = batches.lookup(publicBatchId);
+  assert(batch.status == BatchStatus.PENDING, "Batch is not pending verification");
+  assert(batch.verificationCount < 65535, "Verification history limit reached");
+
+  const evidence = verificationEvidence();
+  assert(evidence.actualBps <= 10000, "Actual recycled content exceeds 10000 bps");
+  const publicLabId = disclose(evidence.labId);
+  assert(labs.member(publicLabId), "Certificate lab is not registered");
+  const lab = labs.lookup(publicLabId);
+  assert(lab.active, "Certificate lab is inactive");
+
+  assert(
+    !kernel.blockTimeLessThan(disclose(evidence.inspectedAt)),
+    "Inspection time is in the future"
+  );
+  assert(
+    kernel.blockTimeLessThan(disclose(evidence.validUntil)),
+    "Certificate is expired"
+  );
+  assert(evidence.validUntil > evidence.inspectedAt, "Invalid certificate validity window");
+
+  const evidenceCommitment = persistentCommit<EvidenceCommitInput>(
+    EvidenceCommitInput {
+      contractAddress: kernel.self(),
+      batchId: publicBatchId,
+      supplier: batch.supplier,
+      productHash: batch.productHash,
+      requirementBps: batch.requirementBps,
+      actualBps: evidence.actualBps,
+      labId: evidence.labId,
+      inspectedAt: evidence.inspectedAt,
+      validUntil: evidence.validUntil
+    },
+    evidence.commitmentNonce
+  );
+  const publicCommitment = disclose(evidenceCommitment);
+  assert(!usedEvidence.member(publicCommitment), "Certificate evidence already used");
+
+  const signatureMessage: Vector<4, Field> = [
+    transientHash<Bytes<26>>("greenproof:verification:v1"),
+    transientHash<Bytes<32>>(publicCommitment),
+    publicLabId as Field,
+    1 as Field
+  ];
+  Schnorr_schnorrVerify<4>(signatureMessage, evidence.signature, lab.signingKey);
+
+  const privateStatus = evidence.actualBps >= batch.requirementBps
+    ? BatchStatus.COMPLIANT
+    : BatchStatus.NON_COMPLIANT;
+  const publicStatus = disclose(privateStatus);
+  const verificationNumber = (batch.verificationCount + 1) as Uint<16>;
+
+  if (!verifications.member(publicBatchId)) {
+    verifications.insert(
+      publicBatchId,
+      default<Map<Uint<16>, VerificationRecord>>
+    );
+  }
+  verifications.lookup(publicBatchId).insert(
+    verificationNumber,
+    VerificationRecord {
+      status: publicStatus,
+      labId: publicLabId,
+      evidenceCommitment: publicCommitment,
+      inspectedAt: disclose(evidence.inspectedAt),
+      validUntil: disclose(evidence.validUntil),
+      revoked: false
+    }
+  );
+  usedEvidence.insert(publicCommitment);
+
+  batches.insert(
+    publicBatchId,
+    BatchRecord {
+      supplier: batch.supplier,
+      productHash: batch.productHash,
+      metadataHash: batch.metadataHash,
+      requirementBps: batch.requirementBps,
+      status: publicStatus,
+      recordRevision: batch.recordRevision,
+      verificationCount: verificationNumber
+    }
+  );
+  totalVerifications.increment(1);
+}
+
+circuit revokeLatestVerification(batchId: BatchId, batch: BatchRecord): [] {
+  assert(batch.verificationCount > 0, "Batch has no verification");
+  assert(
+    batch.status == BatchStatus.COMPLIANT || batch.status == BatchStatus.NON_COMPLIANT,
+    "Latest verification cannot be revoked"
+  );
+  const latest = verifications.lookup(batchId).lookup(batch.verificationCount);
+  assert(!latest.revoked, "Verification already revoked");
+
+  verifications.lookup(batchId).insert(
+    batch.verificationCount,
+    VerificationRecord {
+      status: latest.status,
+      labId: latest.labId,
+      evidenceCommitment: latest.evidenceCommitment,
+      inspectedAt: latest.inspectedAt,
+      validUntil: latest.validUntil,
+      revoked: true
+    }
+  );
+  batches.insert(
+    batchId,
+    BatchRecord {
+      supplier: batch.supplier,
+      productHash: batch.productHash,
+      metadataHash: batch.metadataHash,
+      requirementBps: batch.requirementBps,
+      status: BatchStatus.REVOKED,
+      recordRevision: batch.recordRevision,
+      verificationCount: batch.verificationCount
+    }
+  );
+}
+
+export circuit revokeBatch(batchId: BatchId, byAdmin: Boolean): [] {
+  assertNotPaused();
+  const publicByAdmin = disclose(byAdmin);
+  const publicBatchId = disclose(batchId);
+  assert(batches.member(publicBatchId), "Batch not found");
+  const batch = batches.lookup(publicBatchId);
+  assert(batch.verificationCount > 0, "Batch has no verification");
+  const latest = verifications.lookup(publicBatchId).lookup(batch.verificationCount);
+  if (publicByAdmin) {
+    assertAdmin();
+  } else {
+    assertLabOperator(latest.labId);
+  }
+  revokeLatestVerification(publicBatchId, batch);
+}
+
+export pure circuit certificateChallenge(
+  ann_x: Field,
+  ann_y: Field,
+  pk_x: Field,
+  pk_y: Field,
+  msg: Vector<4, Field>
+): Field {
+  return Schnorr_schnorrChallenge(ann_x, ann_y, pk_x, pk_y, msg);
+}

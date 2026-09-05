@@ -1,0 +1,35 @@
+{
+  "name": "@greenproof/contract",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./managed/green-proof/contract": {
+      "types": "./dist/managed/green-proof/contract/index.d.ts",
+      "import": "./dist/managed/green-proof/contract/index.js",
+      "default": "./dist/managed/green-proof/contract/index.js"
+    }
+  },
+  "scripts": {
+    "compact": "compact compile src/green-proof.compact src/managed/green-proof",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "build": "npm run compact && tsc --project tsconfig.build.json && cp -R src/managed dist/managed && cp src/green-proof.compact src/schnorr.compact dist/",
+    "test": "vitest run",
+    "test:compile": "npm run compact && npm run typecheck && npm test"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "0.16.0",
+    "@midnight-ntwrk/midnight-js-protocol": "4.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  }
+}
