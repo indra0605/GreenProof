@@ -9,12 +9,19 @@ Private recycled-content verification on Midnight. A trusted lab can prove that 
 **Product proposal:** [`proposals.md`](proposals.md)  
 **Level 4 evidence checklist:** [`docs/LEVEL-4-SUBMISSION.md`](docs/LEVEL-4-SUBMISSION.md)  
 **Preprod deployment guide:** [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)  
+**Real transaction walkthrough:** [`docs/REAL-PREPROD-FLOW.md`](docs/REAL-PREPROD-FLOW.md)
 **Product X profile:** `PENDING — add public profile URL before submission`  
 **Demo video:** `PENDING — add public video URL before submission`
 
 ## Browser deployment on Midnight preprod
 
 Green Proof follows the 1AM browser-extension pattern from [`tusharpamnani/midnight-skills-counter-dapp`](https://github.com/tusharpamnani/midnight-skills-counter-dapp). Deployment is performed by the connected 1AM wallet; the app does not contain a funded deployer wallet or a deployment API route.
+
+Portal reads use the Preprod indexer. Portal writes call the deployed Compact
+circuits through 1AM: batch creation, trusted-lab registration, pause control,
+and private verification. There is no fallback sample ledger in the UI. See
+[`docs/REAL-PREPROD-FLOW.md`](docs/REAL-PREPROD-FLOW.md) for the required
+fresh-deployment flow.
 
 ### Prerequisites
 

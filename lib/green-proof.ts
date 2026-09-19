@@ -4,10 +4,12 @@
 
 import { sampleSigningKey } from "@midnight-ntwrk/compact-runtime";
 import { CompiledContract } from "@midnight-ntwrk/compact-js";
-import { createUnprovenDeployTx, submitTxAsync } from "@midnight-ntwrk/midnight-js-contracts";
+import { createUnprovenDeployTx, findDeployedContract, submitTxAsync } from "@midnight-ntwrk/midnight-js-contracts";
 import * as GreenProof from "@contract/managed/green-proof/contract/index.js";
+import { witnesses } from "@contract/witnesses";
+import type { VerificationEvidence } from "@contract/witnesses";
 
-import { selectPreprodNetwork, type ConnectedSession } from "./midnight";
+import { selectPreprodNetwork, toHex, type ConnectedSession } from "./midnight";
 
 const ZK_ASSET_PATH = "/zk/green-proof/";
 export const PRIVATE_STATE_ID = "greenProofPrivateState";
@@ -32,9 +34,9 @@ function deploymentWitnesses() {
   };
 }
 
-function makeCompiledContract() {
+function makeCompiledContract(useRealWitnesses = false) {
   return CompiledContract.make("green-proof", GreenProof.Contract).pipe(
-    CompiledContract.withWitnesses(deploymentWitnesses() as any),
+    CompiledContract.withWitnesses((useRealWitnesses ? witnesses : deploymentWitnesses()) as any),
     CompiledContract.withCompiledFileAssets(ZK_ASSET_PATH),
   );
 }
@@ -80,4 +82,43 @@ export async function deployGreenProof(session: ConnectedSession): Promise<strin
   );
 
   return contractAddress;
+}
+
+export async function callGreenProofCircuit(
+  session: ConnectedSession,
+  contractAddress: string,
+  circuitId: "manageAdmin" | "manageLab" | "manageBatch" | "verifyBatch" | "revokeBatch",
+  args: readonly unknown[],
+): Promise<string> {
+  selectPreprodNetwork();
+  const compiledContract = makeCompiledContract(true);
+  const found = await findDeployedContract(session.providers as any, {
+    compiledContract,
+    contractAddress,
+    privateStateId: PRIVATE_STATE_ID,
+  });
+  const txId = await (found.callTx as any)[circuitId](...args);
+  return txId?.txId ?? txId?.id ?? "confirmed";
+}
+
+export async function setVerificationEvidence(
+  session: ConnectedSession,
+  evidence: VerificationEvidence,
+): Promise<void> {
+  const current = await session.providers.privateStateProvider.get(PRIVATE_STATE_ID);
+  if (!current) throw new Error("No private state found. Deploy a contract in this browser session first.");
+  await session.providers.privateStateProvider.set(PRIVATE_STATE_ID, {
+    ...(current as GreenProofPrivateState),
+    pendingEvidence: evidence,
+  });
+}
+
+export async function deriveCurrentRoleKeys(session: ConnectedSession): Promise<{ admin: string; supplier: string; labOperator: string }> {
+  const current = await session.providers.privateStateProvider.get(PRIVATE_STATE_ID) as GreenProofPrivateState | null;
+  if (!current) throw new Error("No private state found. Deploy a contract in this browser session first.");
+  return {
+    admin: toHex(GreenProof.pureCircuits.deriveAdminKey(current.callerSecret)),
+    supplier: toHex(GreenProof.pureCircuits.deriveSupplierKey(current.callerSecret)),
+    labOperator: toHex(GreenProof.pureCircuits.deriveLabOperatorKey(current.callerSecret)),
+  };
 }

@@ -31,7 +31,7 @@ balancing, and submission APIs.
 
 - Network: `preprod`
 - Contract: `985167313b70cfd68728877192cf4b63afc5e4994834d942096e87f3dc6cf3a4`
-- Public verifier route: `/verify/A-1042`
+- Public verifier route: `/verify/<32-byte batch ID>`
 - Deployment UI: `/deploy`
 
 Confirm address and final transaction state in a current Preprod explorer

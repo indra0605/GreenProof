@@ -28,9 +28,10 @@ Record one minute:
 
 1. Open public landing page and show Green Proof purpose.
 2. Open `/deploy`; show Midnight `preprod` and contract address.
-3. Open `/portal`; show private evidence boundary and operator workspace.
-4. Open `/verify/A-1042`; show public compliance result.
-5. Point to README privacy model and passing CI run.
+3. Connect 1AM, deploy a fresh contract, then create a batch from `/portal/batches/new`.
+4. Open `/portal/lab`; submit real private evidence and approve `verifyBatch` in 1AM.
+5. Open `/verify/<batch-id-hash>`; show public result from live ledger.
+6. Point to README privacy model and passing CI run.
 
 ## Link block for README
 

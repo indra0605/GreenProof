@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WalletSessionProvider } from "@/components/wallet-session";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><WalletSessionProvider>{children}</WalletSessionProvider></body>
     </html>
   );
 }
