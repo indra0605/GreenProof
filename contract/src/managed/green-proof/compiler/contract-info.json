@@ -1,0 +1,726 @@
+{
+  "compiler-version": "0.31.1",
+  "language-version": "0.23.0",
+  "runtime-version": "0.16.0",
+  "circuits": [
+    {
+      "name": "deriveAdminKey",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "secret",
+          "type": {
+            "type-name": "Alias",
+            "name": "CallerSecret",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Alias",
+        "name": "AdminKey",
+        "type": {
+          "type-name": "Bytes",
+          "length": 32
+        }
+      }
+    },
+    {
+      "name": "deriveSupplierKey",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "secret",
+          "type": {
+            "type-name": "Alias",
+            "name": "CallerSecret",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Alias",
+        "name": "SupplierKey",
+        "type": {
+          "type-name": "Bytes",
+          "length": 32
+        }
+      }
+    },
+    {
+      "name": "deriveLabOperatorKey",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "secret",
+          "type": {
+            "type-name": "Alias",
+            "name": "CallerSecret",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Alias",
+        "name": "LabOperatorKey",
+        "type": {
+          "type-name": "Bytes",
+          "length": 32
+        }
+      }
+    },
+    {
+      "name": "manageAdmin",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "action",
+          "type": {
+            "type-name": "Enum",
+            "name": "AdminAction",
+            "elements": [
+              "SET_PAUSED",
+              "TRANSFER_ADMIN"
+            ]
+          }
+        },
+        {
+          "name": "nextPaused",
+          "type": {
+            "type-name": "Boolean"
+          }
+        },
+        {
+          "name": "nextAdmin",
+          "type": {
+            "type-name": "Alias",
+            "name": "AdminKey",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "manageLab",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "action",
+          "type": {
+            "type-name": "Enum",
+            "name": "LabAction",
+            "elements": [
+              "REGISTER",
+              "UPDATE",
+              "SET_ACTIVE",
+              "DELETE"
+            ]
+          }
+        },
+        {
+          "name": "labId",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 65535
+          }
+        },
+        {
+          "name": "operatorKey",
+          "type": {
+            "type-name": "Alias",
+            "name": "LabOperatorKey",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        },
+        {
+          "name": "signingKey",
+          "type": {
+            "type-name": "Alias",
+            "name": "JubjubPoint",
+            "type": {
+              "type-name": "Opaque",
+              "tsType": "JubjubPoint"
+            }
+          }
+        },
+        {
+          "name": "metadataHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "active",
+          "type": {
+            "type-name": "Boolean"
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "manageBatch",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "action",
+          "type": {
+            "type-name": "Enum",
+            "name": "BatchAction",
+            "elements": [
+              "CREATE",
+              "UPDATE",
+              "DELETE",
+              "REQUEST_REVERIFICATION",
+              "ARCHIVE"
+            ]
+          }
+        },
+        {
+          "name": "batchId",
+          "type": {
+            "type-name": "Alias",
+            "name": "BatchId",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        },
+        {
+          "name": "productHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "metadataHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "requirementBps",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 65535
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "verifyBatch",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "batchId",
+          "type": {
+            "type-name": "Alias",
+            "name": "BatchId",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "revokeBatch",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "batchId",
+          "type": {
+            "type-name": "Alias",
+            "name": "BatchId",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        },
+        {
+          "name": "byAdmin",
+          "type": {
+            "type-name": "Boolean"
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "certificateChallenge",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "ann_x",
+          "type": {
+            "type-name": "Field"
+          }
+        },
+        {
+          "name": "ann_y",
+          "type": {
+            "type-name": "Field"
+          }
+        },
+        {
+          "name": "pk_x",
+          "type": {
+            "type-name": "Field"
+          }
+        },
+        {
+          "name": "pk_y",
+          "type": {
+            "type-name": "Field"
+          }
+        },
+        {
+          "name": "msg",
+          "type": {
+            "type-name": "Vector",
+            "length": 4,
+            "type": {
+              "type-name": "Field"
+            }
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Field"
+      }
+    }
+  ],
+  "witnesses": [
+    {
+      "name": "getSchnorrReduction",
+      "arguments": [
+        {
+          "name": "challengeHash",
+          "type": {
+            "type-name": "Field"
+          }
+        }
+      ],
+      "result type": {
+        "type-name": "Tuple",
+        "types": [
+          {
+            "type-name": "Field"
+          },
+          {
+            "type-name": "Uint",
+            "maxval": 452312848583266388373324160190187140051835877600158453279131187530910662655
+          }
+        ]
+      }
+    },
+    {
+      "name": "callerSecret",
+      "arguments": [
+      ],
+      "result type": {
+        "type-name": "Alias",
+        "name": "CallerSecret",
+        "type": {
+          "type-name": "Bytes",
+          "length": 32
+        }
+      }
+    },
+    {
+      "name": "verificationEvidence",
+      "arguments": [
+      ],
+      "result type": {
+        "type-name": "Struct",
+        "name": "VerificationEvidence",
+        "elements": [
+          {
+            "name": "actualBps",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 65535
+            }
+          },
+          {
+            "name": "labId",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 65535
+            }
+          },
+          {
+            "name": "inspectedAt",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 18446744073709551615
+            }
+          },
+          {
+            "name": "validUntil",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 18446744073709551615
+            }
+          },
+          {
+            "name": "commitmentNonce",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "signature",
+            "type": {
+              "type-name": "Struct",
+              "name": "SchnorrSignature",
+              "elements": [
+                {
+                  "name": "announcement",
+                  "type": {
+                    "type-name": "Alias",
+                    "name": "JubjubPoint",
+                    "type": {
+                      "type-name": "Opaque",
+                      "tsType": "JubjubPoint"
+                    }
+                  }
+                },
+                {
+                  "name": "response",
+                  "type": {
+                    "type-name": "Field"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "contracts": [
+  ],
+  "ledger": [
+    {
+      "name": "admin",
+      "index": 0,
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Alias",
+        "name": "AdminKey",
+        "type": {
+          "type-name": "Bytes",
+          "length": 32
+        }
+      }
+    },
+    {
+      "name": "paused",
+      "index": 1,
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Boolean"
+      }
+    },
+    {
+      "name": "labs",
+      "index": 2,
+      "exported": true,
+      "storage": "Map",
+      "key": {
+        "type-name": "Uint",
+        "maxval": 65535
+      },
+      "value": {
+        "type-name": "Struct",
+        "name": "LabRecord",
+        "elements": [
+          {
+            "name": "operatorKey",
+            "type": {
+              "type-name": "Alias",
+              "name": "LabOperatorKey",
+              "type": {
+                "type-name": "Bytes",
+                "length": 32
+              }
+            }
+          },
+          {
+            "name": "signingKey",
+            "type": {
+              "type-name": "Alias",
+              "name": "JubjubPoint",
+              "type": {
+                "type-name": "Opaque",
+                "tsType": "JubjubPoint"
+              }
+            }
+          },
+          {
+            "name": "metadataHash",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "active",
+            "type": {
+              "type-name": "Boolean"
+            }
+          },
+          {
+            "name": "revision",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 65535
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "batches",
+      "index": 3,
+      "exported": true,
+      "storage": "Map",
+      "key": {
+        "type-name": "Alias",
+        "name": "BatchId",
+        "type": {
+          "type-name": "Bytes",
+          "length": 32
+        }
+      },
+      "value": {
+        "type-name": "Struct",
+        "name": "BatchRecord",
+        "elements": [
+          {
+            "name": "supplier",
+            "type": {
+              "type-name": "Alias",
+              "name": "SupplierKey",
+              "type": {
+                "type-name": "Bytes",
+                "length": 32
+              }
+            }
+          },
+          {
+            "name": "productHash",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "metadataHash",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "requirementBps",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 65535
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "type-name": "Enum",
+              "name": "BatchStatus",
+              "elements": [
+                "PENDING",
+                "COMPLIANT",
+                "NON_COMPLIANT",
+                "REVOKED",
+                "ARCHIVED",
+                "DELETED"
+              ]
+            }
+          },
+          {
+            "name": "recordRevision",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 65535
+            }
+          },
+          {
+            "name": "verificationCount",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 65535
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "verifications",
+      "index": 4,
+      "exported": true,
+      "storage": "Map",
+      "key": {
+        "type-name": "Alias",
+        "name": "BatchId",
+        "type": {
+          "type-name": "Bytes",
+          "length": 32
+        }
+      },
+      "value": {
+        "type-name": "Map",
+        "key": {
+          "type-name": "Uint",
+          "maxval": 65535
+        },
+        "value": {
+          "type-name": "Struct",
+          "name": "VerificationRecord",
+          "elements": [
+            {
+              "name": "status",
+              "type": {
+                "type-name": "Enum",
+                "name": "BatchStatus",
+                "elements": [
+                  "PENDING",
+                  "COMPLIANT",
+                  "NON_COMPLIANT",
+                  "REVOKED",
+                  "ARCHIVED",
+                  "DELETED"
+                ]
+              }
+            },
+            {
+              "name": "labId",
+              "type": {
+                "type-name": "Uint",
+                "maxval": 65535
+              }
+            },
+            {
+              "name": "evidenceCommitment",
+              "type": {
+                "type-name": "Bytes",
+                "length": 32
+              }
+            },
+            {
+              "name": "inspectedAt",
+              "type": {
+                "type-name": "Uint",
+                "maxval": 18446744073709551615
+              }
+            },
+            {
+              "name": "validUntil",
+              "type": {
+                "type-name": "Uint",
+                "maxval": 18446744073709551615
+              }
+            },
+            {
+              "name": "revoked",
+              "type": {
+                "type-name": "Boolean"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "usedEvidence",
+      "index": 5,
+      "exported": true,
+      "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "totalBatches",
+      "index": 6,
+      "exported": true,
+      "storage": "Counter"
+    },
+    {
+      "name": "totalLabs",
+      "index": 7,
+      "exported": true,
+      "storage": "Counter"
+    },
+    {
+      "name": "totalVerifications",
+      "index": 8,
+      "exported": true,
+      "storage": "Counter"
+    }
+  ]
+}
