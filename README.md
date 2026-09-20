@@ -1,5 +1,7 @@
 # Green Proof
 
+[![CI](https://github.com/indra0605/GreenProof/actions/workflows/ci.yml/badge.svg)](https://github.com/indra0605/GreenProof/actions/workflows/ci.yml)
+
 Privacy-preserving recycled-content verification on [Midnight](https://midnight.network/). Green Proof lets a trusted laboratory prove that a product batch meets a public recycled-content threshold without revealing the exact percentage, recipe, raw report, or certificate signature.
 
 > Level 4 MVP: live browser deployment flow, Midnight Preprod integration, authenticated contract operations, public verification UI, tests, CI/CD, and documentation.
@@ -8,9 +10,10 @@ Privacy-preserving recycled-content verification on [Midnight](https://midnight.
 
 | Resource | Link |
 | --- | --- |
-| Live MVP | **Pending — add deployed URL** |
+| Live MVP | [green-proof-flax.vercel.app](https://green-proof-flax.vercel.app/) |
 | Demo video | [https://drive.google.com/file/d/1XSnEXpI88DMPYyhx1Lhq2_XCaXwMpPvV/view?usp=sharing](https://drive.google.com/file/d/1XSnEXpI88DMPYyhx1Lhq2_XCaXwMpPvV/view?usp=sharing) |
 | Product X profile | [https://x.com/GreenProof](https://x.com/GreenProof)|
+| Latest successful CI run | [CI #10](https://github.com/indra0605/GreenProof/actions/runs/35496313008) |
 | CI workflow | [.github/workflows/ci.yml](.github/workflows/ci.yml) |
 | Preprod contract | [985167…c6cf3a4](https://preprod.midnight.network/) |
 | Product proposal | [proposals.md](proposals.md) |
@@ -19,18 +22,16 @@ Privacy-preserving recycled-content verification on [Midnight](https://midnight.
 | Real transaction flow | [docs/REAL-PREPROD-FLOW.md](docs/REAL-PREPROD-FLOW.md) |
 | Contract documentation | [contract/README.md](contract/README.md) |
 
-Replace pending values with public URLs before submitting the challenge.
-
 ## Screenshots
 
-Current captures live in `docs/screenshots/`. Add a fresh CI output capture before submission.
+Current captures live in `docs/screenshots/`.
 
 1. `landing-page.png` — Green Proof public landing page.
 2. `deploy-wallet.png` — `/deploy` showing Midnight Preprod and 1AM connection.
 3. `portal-overview.png` — live ledger overview.
 4. `batch-create.png` — public batch fields before submission.
 5. `verification-result.png` — public verification page before a real batch lookup.
-6. `ci-tests.png` — terminal or GitHub Actions output showing passing tests.
+6. `ci-tests.svg` — GitHub Actions output showing passing tests.
 
 Embed captures here:
 
@@ -45,6 +46,8 @@ Embed captures here:
 ![Batch creation](docs/screenshots/batch-create.png)
 
 ![Public verification page](docs/screenshots/verification-result.png)
+
+![Passing GitHub Actions CI run](docs/screenshots/ci-tests.svg)
 
 To capture locally:
 
@@ -256,9 +259,6 @@ The build emits upstream async-WebAssembly compatibility warnings for Midnight r
 
 ## Roadmap
 
-- Add a public deployed MVP URL and one-minute demo video.
-- Add committed current UI and CI screenshots.
-- Add a public product profile on X.
 - Add encrypted private-state backup and recovery.
 - Add external product-label storage keyed by product hash.
 - Add independent security review before production certification use.
@@ -272,12 +272,12 @@ The build emits upstream async-WebAssembly compatibility warnings for Midnight r
 - [x] CI workflow
 - [x] Eight passing contract tests
 - [x] UI screenshots
-- [ ] Live MVP URL
-- [ ] Demo video URL
-- [ ] Product X profile
-- [ ] Latest public CI run URL
-- [ ] CI output screenshot
-- [ ] Minimum 15 meaningful commits
+- [x] Live MVP URL
+- [x] Demo video URL
+- [x] Product X profile linked in README
+- [x] Latest public CI run URL
+- [x] CI output screenshot
+- [x] Minimum 15 meaningful commits (24 commits)
 
 See [`docs/LEVEL-4-SUBMISSION.md`](docs/LEVEL-4-SUBMISSION.md) for the full evidence checklist and demo script.
 
