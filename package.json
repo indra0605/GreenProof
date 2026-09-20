@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --webpack",
     "sync:assets": "rm -rf public/zk/green-proof/keys public/zk/green-proof/zkir && mkdir -p public/zk/green-proof && cp -Rf contract/src/managed/green-proof/keys public/zk/green-proof/ && cp -Rf contract/src/managed/green-proof/zkir public/zk/green-proof/",
-    "build": "next build --webpack",
+    "build:contract": "npm --prefix contract run build",
+    "build": "npm run build:contract && npm run sync:assets && next build --webpack",
     "test:contract": "npm --prefix contract run test:compile",
     "ci": "npm run test:contract && npm run lint && npm run build",
     "start": "next start",
