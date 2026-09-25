@@ -15,7 +15,7 @@ Privacy-preserving recycled-content verification on [Midnight](https://midnight.
 | Product X profile | [https://x.com/GreenProof](https://x.com/GreenProof)|
 | Latest successful CI run | [CI #10](https://github.com/indra0605/GreenProof/actions/runs/35496313008) |
 | CI workflow | [.github/workflows/ci.yml](.github/workflows/ci.yml) |
-| Preprod contract | [985167…c6cf3a4](https://preprod.midnight.network/) |
+| Preprod contract | [8d6bcd…bf9270b9](https://explorer.1am.xyz/contract/8d6bcd216001340daa7af70b7bf868ac5446cf179074b3bd49298242bf9270b9) |
 | Product proposal | [proposals.md](proposals.md) |
 | Level 4 checklist | [docs/LEVEL-4-SUBMISSION.md](docs/LEVEL-4-SUBMISSION.md) |
 | Deployment guide | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) |
@@ -176,7 +176,7 @@ Detailed transaction order and limits are documented in [docs/REAL-PREPROD-FLOW.
 | Field | Value |
 | --- | --- |
 | Network | `preprod` |
-| Contract | `985167313b70cfd68728877192cf4b63afc5e4994834d942096e87f3dc6cf3a4` |
+| Contract | [`8d6bcd216001340daa7af70b7bf868ac5446cf179074b3bd49298242bf9270b9`](https://explorer.1am.xyz/contract/8d6bcd216001340daa7af70b7bf868ac5446cf179074b3bd49298242bf9270b9) |
 | Public verifier | `/verify/<32-byte-batch-id>` |
 | Deployment UI | `/deploy` |
 | Indexer | [Midnight Preprod indexer](https://indexer.preprod.midnight.network/) |

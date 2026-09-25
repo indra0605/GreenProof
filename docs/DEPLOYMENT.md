@@ -30,7 +30,7 @@ balancing, and submission APIs.
 ## Current deployment record
 
 - Network: `preprod`
-- Contract: `985167313b70cfd68728877192cf4b63afc5e4994834d942096e87f3dc6cf3a4`
+- Contract: `8d6bcd216001340daa7af70b7bf868ac5446cf179074b3bd49298242bf9270b9`
 - Public verifier route: `/verify/<32-byte batch ID>`
 - Deployment UI: `/deploy`
 
