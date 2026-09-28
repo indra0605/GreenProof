@@ -4,7 +4,7 @@
 
 Privacy-preserving recycled-content verification on [Midnight](https://midnight.network/). Green Proof lets a trusted laboratory prove that a product batch meets a public recycled-content threshold without revealing the exact percentage, recipe, raw report, or certificate signature.
 
-> Level 4 MVP: live browser deployment flow, Midnight Preprod integration, authenticated contract operations, public verification UI, tests, CI/CD, and documentation.
+> Level 5 validated MVP: live browser deployment flow, Midnight Preprod integration, authenticated contract operations, public verification UI, 59 unique Preprod testers, feedback-led improvements, tests, CI/CD, and documentation.
 
 ## Quick links
 
@@ -22,7 +22,28 @@ Privacy-preserving recycled-content verification on [Midnight](https://midnight.
 | Level 4 checklist | [docs/LEVEL-4-SUBMISSION.md](docs/LEVEL-4-SUBMISSION.md) |
 | Deployment guide | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) |
 | Real transaction flow | [docs/REAL-PREPROD-FLOW.md](docs/REAL-PREPROD-FLOW.md) |
+| Usage guide | [docs/USAGE.md](docs/USAGE.md) |
+| Level 5 feedback | [docs/FEEDBACK.md](docs/FEEDBACK.md) |
+| Preprod users | [USERS.md](USERS.md) |
+| User acquisition copy | [docs/USER-ACQUISITION.md](docs/USER-ACQUISITION.md) |
 | Contract documentation | [contract/README.md](contract/README.md) |
+
+## Contract Address
+
+| Network | Address |
+| --- | --- |
+| Preprod | [`8d6bcd216001340daa7af70b7bf868ac5446cf179074b3bd49298242bf9270b9`](https://explorer.1am.xyz/contract/8d6bcd216001340daa7af70b7bf868ac5446cf179074b3bd49298242bf9270b9) |
+
+## Level 5 — User Validation
+
+- Target: 50 Preprod users
+- Current: **59 unique Preprod wallet addresses** from 61 feedback submissions
+- Average feedback rating: **4.39 / 5**
+- User evidence: [USERS.md](USERS.md)
+- Feedback log, themes, and implemented changes: [docs/FEEDBACK.md](docs/FEEDBACK.md)
+- Collection period: 22–28 September 2026
+
+Feedback drove clearer three-step onboarding, example input formats, public/private data warnings, a pre-submit review, stronger post-submit direction, exact verifier validation, prominent evidence validity, and larger mobile controls.
 
 ## Screenshots
 
@@ -202,6 +223,8 @@ lib/
   live-ledger.ts          Preprod indexer state mapping
 public/zk/                Browser-served proving assets
 docs/                     Deployment and submission evidence
+USERS.md                  Deduplicated Level 5 Preprod wallet list
+PROPOSAL.md               Level 5 proposal entrypoint
 ~~~
 
 ## CI/CD
@@ -282,6 +305,20 @@ The build emits upstream async-WebAssembly compatibility warnings for Midnight r
 - [x] Minimum 15 meaningful commits (24 commits)
 
 See [`docs/LEVEL-4-SUBMISSION.md`](docs/LEVEL-4-SUBMISSION.md) for the full evidence checklist and demo script.
+
+## Level 5 submission checklist
+
+- [x] `docs/FEEDBACK.md` contains collection method, all 61 responses, themes, and changes
+- [x] `USERS.md` contains 59 unique Preprod wallet addresses
+- [x] Discord/Telegram, X, and direct-message outreach copy documented
+- [x] Preprod contract address remains visible in dedicated section
+- [x] Level 5 validation summary added
+- [x] Top feedback improvements implemented
+- [x] Required Level 5 files present
+- [ ] Updated screenshots and live redeployment completed
+- [ ] 20 meaningful commits made by repository owner
+
+See [`docs/LEVEL-5-SUBMISSION.md`](docs/LEVEL-5-SUBMISSION.md) for evidence and remaining manual actions.
 
 ## License
 
