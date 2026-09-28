@@ -14,7 +14,7 @@ Privacy-preserving recycled-content verification on [Midnight](https://midnight.
 | Demo video | [https://drive.google.com/file/d/1XSnEXpI88DMPYyhx1Lhq2_XCaXwMpPvV/view?usp=sharing](https://drive.google.com/file/d/1XSnEXpI88DMPYyhx1Lhq2_XCaXwMpPvV/view?usp=sharing) |
 | Form | [Google Form](https://forms.gle/oTPmqkWuUe3i7EzN8) |
 | Response | [Google Sheets responses](https://docs.google.com/spreadsheets/d/12DaWvSOC2nVYBN3BnEyW1uF2CBG_l9NBYGZWwN1twEk/edit?usp=drivesdk) |
-| Product X profile | [https://x.com/GreenProof](https://x.com/GreenProof)|
+| Product X profile | [https://x.com/GreenProof_](https://x.com/GreenProof_)|
 | Latest successful CI run | [CI #10](https://github.com/indra0605/GreenProof/actions/runs/35496313008) |
 | CI workflow | [.github/workflows/ci.yml](.github/workflows/ci.yml) |
 | Preprod contract | [8d6bcd…bf9270b9](https://explorer.1am.xyz/contract/8d6bcd216001340daa7af70b7bf868ac5446cf179074b3bd49298242bf9270b9) |

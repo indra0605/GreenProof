@@ -19,7 +19,7 @@ evidence must remain current on the linked profile.
 - [x] Passing GitHub Actions run URL: https://github.com/indra0605/GreenProof/actions/runs/35496313008
 - [x] Live deployed MVP URL: https://green-proof-flax.vercel.app/
 - [x] Demo video URL: https://drive.google.com/file/d/1XSnEXpI88DMPYyhx1Lhq2_XCaXwMpPvV/view?usp=sharing
-- [x] Product X profile linked: https://x.com/GreenProof
+- [x] Product X profile linked: https://x.com/GreenProof_
 - [ ] Product X profile has public Green Proof bio and at least one product post
 - [x] At least 15 meaningful commits: 24 commits on `main`
 
@@ -48,6 +48,6 @@ Add real URLs here after publishing:
 ```text
 Live MVP: https://green-proof-flax.vercel.app/
 Demo video: https://drive.google.com/file/d/1XSnEXpI88DMPYyhx1Lhq2_XCaXwMpPvV/view?usp=sharing
-Product X profile: https://x.com/GreenProof
+Product X profile: https://x.com/GreenProof_
 Latest CI run: https://github.com/indra0605/GreenProof/actions/runs/35496313008
 ```
