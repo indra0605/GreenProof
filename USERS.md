@@ -69,3 +69,12 @@ Source: [Level 5 response sheet](https://docs.google.com/spreadsheets/d/12DaWvSO
 Current count: **59 / 50**
 
 Validation note: all listed values use the `mn_addr_preprod1` prefix. This file records submitted addresses; it does not prove each respondent completed an on-chain transaction.
+
+## Validation procedure
+
+1. Exported form responses from linked response sheet.
+2. Removed exact duplicate wallet strings while retaining first submission date.
+3. Normalized addresses to lowercase and checked `mn_addr_preprod1` prefix.
+4. Ran `npm run validate:evidence` to verify row format, sequence, and uniqueness.
+
+Scope: these are self-reported Preprod wallet addresses. No seed phrase, private key, email address, or other wallet secret is stored here.
