@@ -6,11 +6,15 @@ const feedback = await readFile(new URL("../FEEDBACK.md", import.meta.url), "utf
 const addresses = [...users.matchAll(/`(mn_addr_preprod1[0-9a-z]+)`/g)].map((match) => match[1]);
 const uniqueAddresses = new Set(addresses);
 const feedbackRows = [...feedback.matchAll(/^\|\s*(\d+)\s*\|/gm)].map((match) => Number(match[1]));
+const declaredUserCount = Number(users.match(/Current count: \*\*(\d+) \/ 50\*\*/)?.[1]);
+const declaredResponseCount = Number(feedback.match(/contains (\d+) submissions/)?.[1]);
 
 const errors = [];
 if (addresses.length < 50) errors.push(`USERS.md has ${addresses.length} addresses; expected at least 50.`);
 if (uniqueAddresses.size !== addresses.length) errors.push("USERS.md contains duplicate wallet addresses.");
+if (declaredUserCount !== uniqueAddresses.size) errors.push(`USERS.md declares ${declaredUserCount} users but lists ${uniqueAddresses.size}.`);
 if (feedbackRows.length !== 61) errors.push(`FEEDBACK.md has ${feedbackRows.length} response rows; expected 61.`);
+if (declaredResponseCount !== feedbackRows.length) errors.push(`FEEDBACK.md declares ${declaredResponseCount} responses but lists ${feedbackRows.length}.`);
 if (feedbackRows.some((value, index) => value !== index + 1)) errors.push("FEEDBACK.md response numbering is not contiguous.");
 if (!feedback.includes("## What We Heard (Themes)")) errors.push("FEEDBACK.md is missing What We Heard section.");
 if (!feedback.includes("## What We Changed")) errors.push("FEEDBACK.md is missing What We Changed section.");
