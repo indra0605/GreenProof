@@ -33,6 +33,7 @@ export type LiveLab = {
 
 export type LiveLedger = {
   address: string;
+  fetchedAt: number;
   paused: boolean;
   totalBatches: bigint;
   totalLabs: bigint;
@@ -67,6 +68,7 @@ export async function fetchLiveLedger(
   const ledger = GreenProof.ledger((await fetchState(address)).data);
   return {
     address,
+    fetchedAt: Date.now(),
     paused: ledger.paused,
     totalBatches: ledger.totalBatches,
     totalLabs: ledger.totalLabs,
