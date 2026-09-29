@@ -10,7 +10,8 @@
     "ci": "npm run validate:evidence && npm run test:contract && npm run lint && npm run build",
     "start": "next start",
     "lint": "eslint",
-    "validate:evidence": "node scripts/validate-level5.mjs"
+    "validate:evidence": "node scripts/validate-level5.mjs",
+    "evidence:commits": "node scripts/generate-commit-history.mjs"
   },
   "dependencies": {
     "@midnight-ntwrk/compact-js": "2.5.1",
