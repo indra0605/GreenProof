@@ -22,8 +22,8 @@ Privacy-preserving recycled-content verification on [Midnight](https://midnight.
 | Level 4 checklist | [docs/LEVEL-4-SUBMISSION.md](docs/LEVEL-4-SUBMISSION.md) |
 | Deployment guide | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) |
 | Real transaction flow | [docs/REAL-PREPROD-FLOW.md](docs/REAL-PREPROD-FLOW.md) |
-| Usage guide | [docs/USAGE.md](docs/USAGE.md) |
-| Level 5 feedback | [docs/FEEDBACK.md](docs/FEEDBACK.md) |
+| Usage guide | [USAGE.md](USAGE.md) |
+| Level 5 feedback | [FEEDBACK.md](FEEDBACK.md) |
 | Preprod users | [USERS.md](USERS.md) |
 | User acquisition copy | [docs/USER-ACQUISITION.md](docs/USER-ACQUISITION.md) |
 | Contract documentation | [contract/README.md](contract/README.md) |
@@ -40,7 +40,7 @@ Privacy-preserving recycled-content verification on [Midnight](https://midnight.
 - Current: **59 unique Preprod wallet addresses** from 61 feedback submissions
 - Average feedback rating: **4.39 / 5**
 - User evidence: [USERS.md](USERS.md)
-- Feedback log, themes, and implemented changes: [docs/FEEDBACK.md](docs/FEEDBACK.md)
+- Feedback log, themes, and implemented changes: [FEEDBACK.md](FEEDBACK.md)
 - Collection period: 22–28 September 2026
 
 Feedback drove clearer three-step onboarding, example input formats, public/private data warnings, a pre-submit review, stronger post-submit direction, exact verifier validation, prominent evidence validity, and larger mobile controls.
@@ -308,7 +308,7 @@ See [`docs/LEVEL-4-SUBMISSION.md`](docs/LEVEL-4-SUBMISSION.md) for the full evid
 
 ## Level 5 submission checklist
 
-- [x] `docs/FEEDBACK.md` contains collection method, all 61 responses, themes, and changes
+- [x] `FEEDBACK.md` contains collection method, all 61 responses, themes, and changes
 - [x] `USERS.md` contains 59 unique Preprod wallet addresses
 - [x] Discord/Telegram, X, and direct-message outreach copy documented
 - [x] Preprod contract address remains visible in dedicated section

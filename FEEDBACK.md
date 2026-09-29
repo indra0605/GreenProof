@@ -84,12 +84,12 @@ Average rating: **4.39 / 5**.
 
 | Change | Reason | Commit |
 |---|---|---|
-| Added three-step batch onboarding and field-specific examples | Repeated requests for workflow and format clarity | Pending user commit |
-| Added explicit public/private and sensitive-data guidance | Users asked who can see data and what must never be entered | Pending user commit |
-| Added pre-submit public-data review plus visible success state and verifier next step | Users felt unsure after submission and wanted a final review | Pending user commit |
-| Added exact verify-input validation with actionable error text | Prevent malformed lookups and explain recovery | Pending user commit |
-| Added prominent validity and inspection timestamps to verification result | Users requested clearer freshness and valid-until information | Pending user commit |
-| Increased mobile input sizing, navigation spacing, and touch targets | Small-screen testers reported cramped controls | Pending user commit |
+| Added three-step batch onboarding and field-specific examples | Repeated requests for workflow and format clarity | [`b44aee4`](https://github.com/indra0605/GreenProof/commit/b44aee43502c2d4a9758519be79a8ec4992ee0cf) |
+| Added explicit public/private and sensitive-data guidance | Users asked who can see data and what must never be entered | [`b44aee4`](https://github.com/indra0605/GreenProof/commit/b44aee43502c2d4a9758519be79a8ec4992ee0cf) |
+| Added pre-submit public-data review plus visible success state and verifier next step | Users felt unsure after submission and wanted a final review | [`b44aee4`](https://github.com/indra0605/GreenProof/commit/b44aee43502c2d4a9758519be79a8ec4992ee0cf) |
+| Added exact verify-input validation with actionable error text | Prevent malformed lookups and explain recovery | [`b44aee4`](https://github.com/indra0605/GreenProof/commit/b44aee43502c2d4a9758519be79a8ec4992ee0cf) |
+| Added prominent validity and inspection timestamps to verification result | Users requested clearer freshness and valid-until information | [`b44aee4`](https://github.com/indra0605/GreenProof/commit/b44aee43502c2d4a9758519be79a8ec4992ee0cf) |
+| Increased mobile input sizing, navigation spacing, and touch targets | Small-screen testers reported cramped controls | [`b44aee4`](https://github.com/indra0605/GreenProof/commit/b44aee43502c2d4a9758519be79a8ec4992ee0cf) |
 
 ## Deferred Roadmap
 
