@@ -6,6 +6,8 @@ Feedback was collected through a [Google Form](https://forms.gle/oTPmqkWuUe3i7Ez
 
 Average rating: **4.39 / 5**.
 
+Responses below preserve one row per form submission, including repeated submissions. Wallet counts use deduplicated addresses in [USERS.md](USERS.md). Summaries paraphrase responses to avoid publishing contact details; linked response sheet remains source of record.
+
 ## Raw Feedback Log
 
 | # | User | Feedback Summary | Date |
