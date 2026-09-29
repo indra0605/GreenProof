@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { GREEN_PROOF_CONTRACT_ADDRESS, GREEN_PROOF_CONTRACT_SHORT } from "@/lib/contract-config";
+import { normalizeBytes32 } from "@/lib/input-validation";
 
 import { Icon } from "./icons";
 
@@ -13,9 +14,11 @@ export function VerifyForm() {
   const [error, setError] = useState("");
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const clean = batchId.trim().replace(/^0x/, "").toLowerCase();
-    if (!/^[0-9a-f]{64}$/.test(clean)) {
-      setError("Enter a 64-character hexadecimal batch ID. Remove spaces and try again.");
+    let clean: string;
+    try {
+      clean = normalizeBytes32(batchId, "Batch ID");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Enter a valid batch ID.");
       return;
     }
     setError("");
