@@ -25,6 +25,8 @@ Privacy-preserving recycled-content verification on [Midnight](https://midnight.
 | Usage guide | [USAGE.md](USAGE.md) |
 | Level 5 feedback | [FEEDBACK.md](FEEDBACK.md) |
 | Preprod users | [USERS.md](USERS.md) |
+| Level 5 evidence index | [EVIDENCE.md](EVIDENCE.md) |
+| Commit history evidence | [COMMIT_HISTORY.md](COMMIT_HISTORY.md) |
 | User acquisition copy | [docs/USER-ACQUISITION.md](docs/USER-ACQUISITION.md) |
 | Contract documentation | [contract/README.md](contract/README.md) |
 
@@ -224,6 +226,10 @@ lib/
 public/zk/                Browser-served proving assets
 docs/                     Deployment and submission evidence
 USERS.md                  Deduplicated Level 5 Preprod wallet list
+FEEDBACK.md               Feedback log, themes, and code changes
+USAGE.md                  Role-based product usage guide
+EVIDENCE.md               Reviewer-facing Level 5 evidence index
+COMMIT_HISTORY.md         Checked-in commit history snapshot
 PROPOSAL.md               Level 5 proposal entrypoint
 ~~~
 
@@ -260,6 +266,8 @@ Run the complete local gate:
 ~~~bash
 npm run ci
 ~~~
+
+`npm run validate:evidence` independently checks Level 5 wallet and feedback records. `npm run evidence:commits` refreshes checked-in commit history evidence.
 
 Latest local result:
 
