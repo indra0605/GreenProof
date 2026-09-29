@@ -318,13 +318,14 @@ See [`docs/LEVEL-4-SUBMISSION.md`](docs/LEVEL-4-SUBMISSION.md) for the full evid
 
 - [x] `FEEDBACK.md` contains collection method, all 61 responses, themes, and changes
 - [x] `USERS.md` contains 59 unique Preprod wallet addresses
+- [x] `USAGE.md` documents current public, supplier, lab, and admin workflows
 - [x] Discord/Telegram, X, and direct-message outreach copy documented
 - [x] Preprod contract address remains visible in dedicated section
 - [x] Level 5 validation summary added
 - [x] Top feedback improvements implemented
 - [x] Required Level 5 files present
 - [ ] Updated screenshots and live redeployment completed
-- [ ] 20 meaningful commits made by repository owner
+- [x] Minimum 20 meaningful Level 5 commits, with checked-in [history evidence](COMMIT_HISTORY.md)
 
 See [`docs/LEVEL-5-SUBMISSION.md`](docs/LEVEL-5-SUBMISSION.md) for evidence and remaining manual actions.
 
